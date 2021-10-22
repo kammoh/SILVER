@@ -146,7 +146,7 @@ void StrLowerCase(char *Str)
 	int i;
 
 	for (i = 0;i < strlen(Str);i++)
-		Str[i] == tolower(Str[i]);
+		Str[i] = tolower(Str[i]);
 }
 
 //***************************************************************************************

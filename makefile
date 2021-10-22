@@ -1,10 +1,10 @@
 
-BOOST    ?= /home/work/tools/boost_1_71_0/install
-SYLVAN	 := "./inc/sylvan"
-
-CXX 	 := g++
-CXXFLAGS := -m64 -march=native -DVERILOG
-LDFLAGS  := -m64
+BOOST    ?= /opt/homebrew/opt/boost
+SYLVAN_CFLAGS := $(shell pkg-config sylvan --cflags)
+SYLVAN_LIBS := $(shell pkg-config sylvan --libs)
+GMP_LIBS := $(shell pkg-config gmp --libs)
+BOOST_LIBS := -L$(BOOST)/lib -lboost_program_options
+BOOST_CFLAGS := -I$(BOOST)/include
 
 TARGET	 := verify
 
@@ -18,18 +18,20 @@ INC_DIR  := ./inc
 LIB_DIR	 := ./lib
 OBJ_DIR	 := $(BLD_DIR)/objects
 
-LIBRARIES:= -L$(LIB_DIR) -lsylvan  -L$(BOOST)/lib -lboost_program_options
+CXXFLAGS := $(SYLVAN_CFLAGS) $(BOOST_CFLAGS) -I$(INC_DIR) -DVERILOG -std=c++11
+LDFLAGS := $(SYLVAN_LIBS) $(GMP_LIBS) $(BOOST_LIBS)
 
-# SOURCES  := $(wildcard $(SRC_DIR)/*.cpp)
-SOURCES  := $(shell find $(SRC_PATH) -name '*.$(SRC_EXT)' | sort -k 1nr | cut -f2-)
+
+SOURCES  := $(wildcard $(SRC_DIR)/*.cpp)
+HEADERS  := $(wildcard $(SRC_DIR)/*.hpp) $(wildcard $(INC_DIR)/**/*.hpp) $(wildcard $(INC_DIR)/**/*.h)
+# SOURCES  := $(shell find $(SRC_DIR) -name '*.$(SRC_EXT)' | sort -k 1nr | cut -f2-)
 OBJECTS  := $(SOURCES:$(SRC_DIR)/%.$(SRC_EXT)=$(OBJ_DIR)/%.o)
-INCLUDE	 := -I $(INC_DIR) -I $(BOOST) -I $(SYLVAN)
 
 all: build $(BIN_DIR)/$(TARGET)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS)
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ -c $< $(LIBRARIES)
+	$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ -c $<
 
 $(BIN_DIR)/$(TARGET): $(OBJECTS)
 	@mkdir -p $(@D)
@@ -41,10 +43,10 @@ build:
 	@mkdir -p $(BIN_DIR)
 	@mkdir -p $(OBJ_DIR)
 
-debug: CXXFLAGS += -DDEBUG -g
+debug: CXXFLAGS += -DDEBUG -g -O0
 debug: all
 
-release: CXXFLAGS += -O3 -std=c++11
+release: CXXFLAGS += -O3 -mtune=native -fomit-frame-pointer
 release: all
 
 clean:

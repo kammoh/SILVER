@@ -27,8 +27,8 @@
 #ifndef __SILVER_CONFIG_HPP_
 #define __SILVER_CONFIG_HPP_
 
-#include <sylvan/sylvan.h>
-#include <sylvan/sylvan_obj.hpp>
+#include <sylvan.h>
+#include <sylvan_obj.hpp>
 
 /* Contains all configuration options for the Silver verify tool. */
 typedef struct silver_config {

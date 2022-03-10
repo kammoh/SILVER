@@ -4,8 +4,13 @@ CXXFLAGS := -DVERILOG -std=c++11
 
 
 TARGET	 := silver
-SILVAN_INCLUDE_DIR ?= /usr/local/include
-SILVAN_LIB_DIR ?= /usr/local/lib64
+SYLVAN_DIR ?= /usr/local
+SYLVAN_INCLUDE_DIR ?= $(SYLVAN_DIR)/include
+SYLVAN_LIB_DIR ?= $(SYLVAN_DIR)/lib
+
+BOOST_DIR ?= /usr
+BOOST_INCLUDE_DIR ?= $(BOOST_DIR)/include
+BOOST_LIB_DIR ?= $(BOOST_DIR)/lib
 
 SRC_EXT	 := cpp
 INC_EXT  := hpp
@@ -15,12 +20,12 @@ SRC_DIR	 := ./src
 BIN_DIR	 := ./bin
 OBJ_DIR	 := $(BLD_DIR)/objects
 
-LDFLAGS  := -L$(SILVAN_LIB_DIR) -lsylvan -lboost_program_options
+LDFLAGS  := -L$(SYLVAN_LIB_DIR) -lsylvan -L$(BOOST_LIB_DIR) -lboost_program_options
 
 # SOURCES  := $(wildcard $(SRC_DIR)/*.cpp)
 SOURCES  := $(shell find $(SRC_PATH) -name '*.$(SRC_EXT)' | sort -k 1nr | cut -f2-)
 OBJECTS  := $(SOURCES:$(SRC_DIR)/%.$(SRC_EXT)=$(OBJ_DIR)/%.o)
-INCLUDE	 := -I$(SILVAN_INCLUDE_DIR) -I./inc
+INCLUDE	 := -I$(SYLVAN_INCLUDE_DIR) -I$(BOOST_INCLUDE_DIR) -I./inc
 
 all: build $(BIN_DIR)/$(TARGET)
 
@@ -30,7 +35,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 
 $(BIN_DIR)/$(TARGET): $(OBJECTS)
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(INCLUDE) $(LDFLAGS) -o $(BIN_DIR)/$(TARGET) $(OBJECTS)
+	$(CXX) -o $(BIN_DIR)/$(TARGET) $(OBJECTS) $(LDFLAGS) 
 
 .PHONY: all build clean debug release
 

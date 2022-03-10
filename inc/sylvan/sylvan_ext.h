@@ -1,6 +1,6 @@
 /*
  * -----------------------------------------------------------------
- * COMPANY : Ruhr-Universität Bochum, Chair for Security Engineering
+ * COMPANY : Ruhr-Universitï¿½t Bochum, Chair for Security Engineering
  * AUTHOR  : Pascal Sasdrich (pascal.sasdrich@rub.de)
  * DOCUMENT: https://doi.org/10.1007/978-3-030-64837-4_26
  *           https://eprint.iacr.org/2020/634.pdf
@@ -27,9 +27,9 @@
 #ifndef SYLVAN_EXTENSION_H
 #define SYLVAN_EXTENSION_H
 
-#include <sylvan.h>
-#include <sylvan_stats.h>
-#include <sylvan_cache.h>
+#include <sylvan/sylvan.h>
+#include <sylvan/sylvan_stats.h>
+#include <sylvan/sylvan_cache.h>
 #include <math.h>
 
 using namespace sylvan;

@@ -1,6 +1,6 @@
 /*
  * -----------------------------------------------------------------
- * COMPANY : Ruhr-Universität Bochum, Chair for Security Engineering
+ * COMPANY : Ruhr-Universitï¿½t Bochum, Chair for Security Engineering
  * AUTHOR  : Pascal Sasdrich (pascal.sasdrich@rub.de)
  * DOCUMENT: https://doi.org/10.1007/978-3-030-64837-4_26
  *           https://eprint.iacr.org/2020/634.pdf
@@ -31,7 +31,7 @@
 #include <string>
 #include <vector>
 
-#include <sylvan_obj.hpp>
+#include <sylvan/sylvan_obj.hpp>
 
 class NodeContext {
 

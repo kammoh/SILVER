@@ -1,6 +1,6 @@
 /*
  * -----------------------------------------------------------------
- * COMPANY : Ruhr-Universität Bochum, Chair for Security Engineering
+ * COMPANY : Ruhr-Universitï¿½t Bochum, Chair for Security Engineering
  * AUTHOR  : Pascal Sasdrich (pascal.sasdrich@rub.de)
  * DOCUMENT: https://doi.org/10.1007/978-3-030-64837-4_26
  *           https://eprint.iacr.org/2020/634.pdf
@@ -27,8 +27,8 @@
 #ifndef __SILVER_CONFIG_HPP_
 #define __SILVER_CONFIG_HPP_
 
-#include <sylvan.h>
-#include <sylvan_obj.hpp>
+#include <sylvan/sylvan.h>
+#include <sylvan/sylvan_obj.hpp>
 
 /* Contains all configuration options for the Silver verify tool. */
 typedef struct silver_config {

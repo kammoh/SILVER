@@ -2,7 +2,7 @@
 BOOST    ?= /opt/homebrew/opt/boost
 SYLVAN_CFLAGS ?= $(shell pkg-config sylvan --cflags)
 SYLVAN_LIBS ?= $(shell pkg-config sylvan --libs)
-GMP_LIBS := $(shell pkg-config gmp --libs)
+# GMP_LIBS := $(shell pkg-config gmp --libs)
 BOOST_LIBS := -L$(BOOST)/lib -lboost_program_options
 BOOST_CFLAGS := -I$(BOOST)/include
 

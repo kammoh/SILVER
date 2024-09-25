@@ -1,6 +1,6 @@
 /*
  * -----------------------------------------------------------------
- * COMPANY : Ruhr-Universität Bochum, Chair for Security Engineering
+ * COMPANY : Ruhr-Universitï¿½t Bochum, Chair for Security Engineering
  * AUTHOR  : Pascal Sasdrich (pascal.sasdrich@rub.de)
  * DOCUMENT: https://doi.org/10.1007/978-3-030-64837-4_26
  *           https://eprint.iacr.org/2020/634.pdf
@@ -57,6 +57,34 @@ std::set<std::string> binary  = {"and", "nand", "or", "nor", "xor", "xnor"};
 std::set<std::string> rprobes = {"reg", "out"};
 std::set<std::string> sprobes = {"in", "ref", "not", "and", "nand", "or", "nor", "xor", "xnor"};
 
+std::string strip(const std::string &s)
+{
+    // Remove leading whitespaces
+    auto start = s.find_first_not_of(" \t\n\r");
+
+    // Return empty string if input is empty
+    if (start == std::string::npos) {
+        return "";
+    }
+
+    // Remove trailing whitespaces
+    auto end = s.find_last_not_of(" \t\n\r");
+
+    // Return stripped string
+    return s.substr(start, end - start + 1);
+}
+
+std::string strip_comments(const std::string &line)
+{
+    // Remove comments
+    auto pos = line.find_first_of("#");
+    if (pos != std::string::npos) {
+        return line.substr(0, pos);
+    }
+
+    return line;
+}
+
 std::vector<std::string>
 split(const std::string line, char delimiter)
 {
@@ -69,6 +97,10 @@ split(const std::string line, char delimiter)
 
     // Extract tokens from line
     while(getline(stream, token, delimiter)) {
+        token = strip(token);
+        if (token.empty() || ((token.length() == 1) && (token[0] == delimiter))) {
+            continue;
+        }
         tokens.push_back(token);
     }
 

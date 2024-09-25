@@ -1,6 +1,6 @@
 /*
  * -----------------------------------------------------------------
- * COMPANY : Ruhr-Universität Bochum, Chair for Security Engineering
+ * COMPANY : Ruhr-Universitï¿½t Bochum, Chair for Security Engineering
  * AUTHOR  : Pascal Sasdrich (pascal.sasdrich@rub.de)
  * DOCUMENT: https://doi.org/10.1007/978-3-030-64837-4_26
  *           https://eprint.iacr.org/2020/634.pdf
@@ -59,7 +59,7 @@ po::options_description build_argument_parser(
     ("cores", po::value<unsigned int>(&cfg->CORES)->default_value(0),
         "Maximum number of CPU cores to use. Set to 0 (default) for auto-detect")
 
-    ("memory", po::value<size_t>(&cfg->MEMORY)->default_value(1*1024*1024*1024ull),
+    ("memory", po::value<size_t>(&cfg->MEMORY)->default_value(4*1024*1024*1024ull),
         "RAM (in Bytes) used by Sylvan BDD library.")
 
     ("verbose", po::value<bool>(&cfg->VERBOSE)->default_value(false),
@@ -211,11 +211,21 @@ int main (int argc, char * argv[]) {
     if (cfg.VERBOSE) { std::cout << "\t>> Probes: "; Silver::print_node_vector(model, probes); } else { std::cout << std::endl; }
 
     /* Standard uniformity check */
-    bool uniform = Silver::check_Uniform(model);
+    try {
+        bool uniform = Silver::check_Uniform(model);
 
-    if (uniform)  INFO("uniformity               -- \033[1;32mPASS\033[0m.\n");
-    else          INFO("uniformity               -- \033[1;31mFAIL\033[0m.\n");
+        if (uniform)  INFO("uniformity               -- \033[1;32mPASS\033[0m.\n");
+        else          INFO("uniformity               -- \033[1;31mFAIL\033[0m.\n");
 
+    } catch (const std::length_error & e) {
+        std::cerr << "Exception length_error: " << e.what() << std::endl;
+        INFO("uniformity               -- \033[1;31mFAIL\033[0m.\n");
+        throw e;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        INFO("uniformity   FAILED\n");
+        throw e;
+    }
     /* Remove model graph from memory */
     model.clear();
 

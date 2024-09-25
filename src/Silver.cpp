@@ -1,6 +1,6 @@
 /*
  * -----------------------------------------------------------------
- * COMPANY : Ruhr-Universität Bochum, Chair for Security Engineering
+ * COMPANY : Ruhr-Universitï¿½t Bochum, Chair for Security Engineering
  * AUTHOR  : Pascal Sasdrich (pascal.sasdrich@rub.de)
  * DOCUMENT: https://doi.org/10.1007/978-3-030-64837-4_26
  *           https://eprint.iacr.org/2020/634.pdf
@@ -54,13 +54,17 @@ Silver::parse(const std::string filePath)
 
         model[node].setType(tokens[0]);
 
-        if (unary.find(tokens[0]) != unary.end()) {
-            add_edge(std::stoi(tokens[1]), node, model);
-        } else if (binary.find(tokens[0]) != binary.end()) {
-            add_edge(std::stoi(tokens[1]), node, model);
-            add_edge(std::stoi(tokens[2]), node, model);
-        } else if (!(tokens[0] == "in" || tokens[0] == "ref")) {
-            std::cerr << "[ERR-PARSER] Unsupported node detected: line #" << node+1 << std::endl;
+        try {
+            if (unary.find(tokens[0]) != unary.end()) {
+                add_edge(std::stoi(tokens[1]), node, model);
+            } else if (binary.find(tokens[0]) != binary.end()) {
+                add_edge(std::stoi(tokens[1]), node, model);
+                add_edge(std::stoi(tokens[2]), node, model);
+            } else if (!(tokens[0] == "in" || tokens[0] == "ref")) {
+                std::cerr << "[ERR-PARSER] Unsupported node detected: line #" << node+1 << std::endl;
+            }
+        } catch (const std::invalid_argument& e) {
+            std::cerr << "[ERR-PARSER] Unsupported node detected: line #" << node+1 << ": `" << line << "'" << std::endl;
         }
 
         if (model[node].getType() == "in" || model[node].getType() == "reg" || model[node].getType() == "out") {
@@ -221,7 +225,12 @@ Silver::check_Uniform(Circuit &model)
     } else {
         std::map<int, std::vector<Node>> shares;
         for (auto node = vertices(model).first; node != vertices(model).second; node++) {
-            if (model[*node].getType() == "out") shares[model[*node].getSharing().first].push_back(*node);
+            auto model_node = model[*node];
+            if (model_node.getType() == "out") {
+                auto sh = model_node.getSharing().second;
+                if (shares.find(sh) == shares.end()) shares[sh] = std::vector<Node>();
+                shares[sh].push_back(*node);
+            }
         }
 
         std::vector<std::vector<Bdd>> intra(shares.size());

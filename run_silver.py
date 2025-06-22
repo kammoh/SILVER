@@ -19,6 +19,7 @@ argparser.add_argument("-v", "--verbose", help="Run in verbose", action="store_t
 
 args = argparser.parse_args()
 top_module = args.top_module
+assert top_module, "Top module must be specified"
 yosys_tcl = silver_root / "yosys" / "synthesize.tcl"
 
 yosys_run_dir = silver_root
@@ -114,10 +115,9 @@ def run_silver(
             "--verbose",
             "1",
         ]
-    if args.verbose:
-        print("Running:", " ".join(silver_cmd))
-    else:
-        print("Running silver")
+    silver_cmd = [str(arg) for arg in silver_cmd]
+    print("Running:", " ".join(silver_cmd))
+
     subprocess.run(
         silver_cmd,
         cwd=silver_root,

@@ -52,7 +52,7 @@ debug: BIN_DIR := $(BIN_DIR)_debug
 debug: TARGET := $(TARGET)_debug
 debug: all
 
-release: CXXFLAGS += -O3 -march=native -mtune=native -g0 -DNDEBUG -flto -fomit-frame-pointer
+release: CXXFLAGS += -O3 -march=native -mtune=native -g0 -DNDEBUG -flto
 release: LDFLAGS += -flto
 release: all
 

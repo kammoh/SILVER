@@ -1,0 +1,32 @@
+[tasks]
+bmc
+prove
+cover
+
+[options]
+bmc: mode bmc
+bmc: depth 10
+prove: mode prove
+prove: depth 10
+cover: mode cover
+
+[engines]
+bmc: smtbmc --nopresat bitwuzla -- --noincr
+prove: smtbmc bitwuzla
+cover: smtbmc bitwuzla
+
+[autotune]
+timeout none
+soft_timeout 600
+parallel auto
+wait 10
+
+[script]
+read_verilog -sv -defer -nolatches -formal  hpc2_1_3.sv
+prep -auto-top
+# opt -full -purge -sat
+hierarchy -smtcheck
+check
+
+[files]
+hpc2_1_3.sv

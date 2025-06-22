@@ -1,5 +1,5 @@
 
-BOOST    ?= /opt/homebrew/opt/boost
+BOOST    ?= $(HOMEBREW_PREFIX)/opt/boost
 SYLVAN_CFLAGS ?= $(shell pkg-config sylvan --cflags)
 SYLVAN_LIBS ?= $(shell pkg-config sylvan --libs)
 # GMP_LIBS := $(shell pkg-config gmp --libs)
@@ -18,8 +18,9 @@ INC_DIR  := ./inc
 LIB_DIR	 := ./lib
 OBJ_DIR	 := $(BLD_DIR)/objects
 
-CXXFLAGS := $(SYLVAN_CFLAGS) $(BOOST_CFLAGS) -I$(INC_DIR) -DVERILOG -std=c++11
-LDFLAGS := $(SYLVAN_LIBS) $(GMP_LIBS) $(BOOST_LIBS)
+CXXFLAGS += $(SYLVAN_CFLAGS) $(BOOST_CFLAGS) -I$(INC_DIR) -DVERILOG -std=c++17
+# CXXFLAGS += -O3 -march=native -mtune=native
+LDFLAGS += $(SYLVAN_LIBS) $(GMP_LIBS) $(BOOST_LIBS)
 
 
 SOURCES  := $(wildcard $(SRC_DIR)/*.cpp)
@@ -33,7 +34,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS)
 	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ -c $<
 
-$(BIN_DIR)/$(TARGET): $(OBJECTS)
+$(BIN_DIR)/$(TARGET): $(OBJECTS) $(HEADERS) $(SOURCES)
 	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) $(LDFLAGS) -o $(BIN_DIR)/$(TARGET) $(OBJECTS) $(LIBRARIES)
 
@@ -43,10 +44,16 @@ build:
 	@mkdir -p $(BIN_DIR)
 	@mkdir -p $(OBJ_DIR)
 
-debug: CXXFLAGS += -DDEBUG -g -O0
+debug: CXXFLAGS += -DDEBUG -fsanitize=address -fsanitize=bounds -fsanitize=signed-integer-overflow -fsanitize=shift -fsanitize=undefined  -g -O0
+debug: LDFLAGS += -fsanitize=address -fsanitize=bounds -fsanitize=signed-integer-overflow -fsanitize=shift -fsanitize=undefined
+debug: BLD_DIR := $(BLD_DIR)_debug
+debug: OBJ_DIR := $(BLD_DIR)/objects
+debug: BIN_DIR := $(BIN_DIR)_debug
+debug: TARGET := $(TARGET)_debug
 debug: all
 
-release: CXXFLAGS += -O3 -mtune=native -fomit-frame-pointer
+release: CXXFLAGS += -O3 -march=native -mtune=native -g0 -DNDEBUG -flto -fomit-frame-pointer
+release: LDFLAGS += -flto
 release: all
 
 clean:

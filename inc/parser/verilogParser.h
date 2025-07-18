@@ -35,6 +35,7 @@
 #include "string.h"
 #include "ctype.h"
 #include "math.h"
+#include <iostream>
 
 #define Parser_With_GND_and_VDD  0
 
@@ -2323,6 +2324,8 @@ int MakeCircuitDepth(Parser_LibraryStruct* Library, Parser_CircuitStruct* Circui
 		DepthIndex++;
 	} while (!all_have_depth);
 
+	std::cout << "Circuit MaxDepth: " << DepthIndex << std::endl;
+
 	Circuit->MaxDepth = DepthIndex;
 	Circuit->CellsInDepth = (int **)malloc((Circuit->MaxDepth + 1) * sizeof(int *));
 	Circuit->NumberOfCellsInDepth = (int *)calloc(Circuit->MaxDepth + 1, sizeof(int));
@@ -2524,8 +2527,11 @@ int Parse_and_Convert(char* LibraryFileName, char* LibraryName,
 	//---------------------------------------------------------------------------------------------//
 	//------------------- make the depth of the cells ---------------------------------------------//
 
-	if (!res)
+	if (!res){
+		std::cout << "MakeCircuitDepth..." << std::endl;
 		res = MakeCircuitDepth(&Library, &Circuit);
+		std::cout << "MakeCircuitDepth done." << " res=" << res << std::endl;
+	}
 
 	//---------------------------------------------------------------------------------------------//
 	//------------------- writing the customized file for Pascal tool -----------------------------//

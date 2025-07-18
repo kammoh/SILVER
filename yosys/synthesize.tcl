@@ -22,22 +22,12 @@ yosys -import
 
 read_verilog -sv $sv_sources
 
-setattr -set SILVER "\"clock\"" i:clk
-setattr -set SILVER "\"clock\"" i:clock*
-setattr -set SILVER "\"control\"" i:reset*
-setattr -set SILVER "\"refresh\"" i:io_rand*
+# setattr -set SILVER "\"clock\"" i:clk
+# setattr -set SILVER "\"clock\"" i:clock*
+# setattr -set SILVER "\"control\"" i:reset*
+# setattr -set SILVER "\"refresh\"" i:io_rand*
 # setattr -set SILVER "\"\[11:0\]_0\"" i:io_a_0
 # setattr -set SILVER "\"\[11:0\]_1\"" i:io_a_1
-# setattr -set SILVER "\"\[23:12\]_0\"" i:io_b_0
-# setattr -set SILVER "\"\[23:12\]_1\"" i:io_b_1
-# setattr -set SILVER "\"\[12:0\]_0\"" o:io_sum_0
-# setattr -set SILVER "\"\[12:0\]_1\"" o:io_sum_1
-setattr -set SILVER "\"\[12:0\]_0\"" i:io_x_0
-setattr -set SILVER "\"\[12:0\]_1\"" i:io_x_1
-setattr -set SILVER "\"0_0\"" o:io_b_0
-setattr -set SILVER "\"0_1\"" o:io_b_1
-# setattr -set SILVER "\"\[12:0\]_0\"" o:io_sum_0
-# setattr -set SILVER "\"\[12:0\]_1\"" o:io_sum_1
 
 if {[string trim $top] eq ""} {
     set top_arg "-auto-top"
@@ -48,10 +38,10 @@ hierarchy -check
 prep {*}$top_arg
 opt_clean -purge
 check -noinit -initdrv
-write_json  ${top}_netlist.json
+write_json ${top}_netlist.json
 
 read_verilog -lib $verilog_library
-setattr -set keep_hierarchy 1;
+setattr -set keep_hierarchy 1
 # set synth_args "-run :coarse"
 set synth_args "-noabc -noshare"
 synth {*}$synth_args {*}$top_arg
@@ -60,10 +50,11 @@ opt_clean -purge
 memory_map
 opt_clean -purge
 
-
+opt -purge
 dfflibmap -liberty $cell_library
 opt_clean -purge
 abc -liberty $cell_library
+opt -purge
 # opt -full -purge -fine
 opt_clean -purge
 
@@ -76,7 +67,7 @@ opt_clean -purge
 
 stat -liberty $cell_library
 
-setattr -set keep_hierarchy 0;
+setattr -set keep_hierarchy 0
 setattr -unset keep_hierarchy
 flatten
 select $top
